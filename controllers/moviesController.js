@@ -1,7 +1,7 @@
 const connection = require('../data/db.js')
 //index
 const index = (req, res) => {
-  const sql = `SELECT id,title FROM movies`
+  const sql = `SELECT id,title,image FROM movies`
   connection.query(sql, (err, results) => {
     if (err) {
       return res.status(500).json({
@@ -14,9 +14,9 @@ const index = (req, res) => {
 //show
 const show = (req, res) => {
   const { id } = req.params
-  const sql = `SELECT id,title,director,genre,abstract,image
-FROM movies
-WHERE id= ?`
+  const sql = `SELECT id,title,director,genre,abstract,image,release_year
+  FROM movies
+  WHERE id= ?`
 
   connection.query(sql, [id], (err, results) => {
     if (err) {
@@ -41,7 +41,7 @@ WHERE id= ?`
           error: 'internal server error',
         })
       }
-      movie.reviews = results.res
+      movie.reviews = results
       res.json(movie)
     })
   })
