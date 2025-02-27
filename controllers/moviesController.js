@@ -1,4 +1,5 @@
 const connection = require('../data/db.js')
+const multer = require('multer')
 //index
 const index = (req, res) => {
   const sql = `SELECT id,title,image FROM movies`
@@ -46,4 +47,32 @@ const show = (req, res) => {
     })
   })
 }
-module.exports = { index, show }
+
+//postReviews
+const postReviews = (req, res) => {
+  console.log('first')
+  const { id } = req.params
+  const { name, vote, text } = req.body
+  console.log(req.body)
+  const sql = 'INSERT INTO reviews (movie_id,name,vote,text) VALUES (?,?,?,?)'
+  console.log('third')
+  connection.query(sql, [id, name, vote, text], (err, results) => {
+    console.log(sql)
+    console.log(vote)
+    if (err) {
+      return res.status(500).json({
+        error: 'internal server error',
+        message: `query failed: ${sql}`,
+      })
+    }
+    console.log(results)
+    res.status(201).json({ id: results.insertId })
+  })
+}
+//post book
+const post = (req, res) => {
+  const { title, director, genre, release_year, abstract, image } = req.body
+  const sql = `INSERT INTO movies (title,director,genre,release_year,abstract) 
+  VALUES ('?','?','?','?','?')`
+}
+module.exports = { index, show, post, postReviews }
